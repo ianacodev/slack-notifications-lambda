@@ -14,9 +14,9 @@ plugins:
   - serverless-offline
   - serverless-plugin-include-dependencies
 functions:
-  processincomingsqsnotifications:
-    handler: src/functions/notification-processor/notification-processor.processIncomingSqsNotifications
+  notificationHandler:
+    handler: src/functions/notification-processor/notification-processor.notificationHandler
     events:
       - http:
-          path: processincomingsqsnotifications
+          path: notificationHandler
           method: post

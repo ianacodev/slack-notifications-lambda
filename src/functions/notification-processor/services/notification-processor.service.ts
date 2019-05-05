@@ -10,8 +10,8 @@ export class NotificationProcessorService {
   private sqsNotificationService: SqsNotificationService;
 
   constructor(
-    slackNotificationService: SlackNotificationService,
-    sqsNotificationService: SqsNotificationService,
+    slackNotificationService: SlackNotificationService = new SlackNotificationService(),
+    sqsNotificationService: SqsNotificationService = new SqsNotificationService(),
   ) {
     this.slackNotificationService = slackNotificationService;
     this.sqsNotificationService = sqsNotificationService;

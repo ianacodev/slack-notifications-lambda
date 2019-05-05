@@ -1,29 +1,34 @@
 // services
-import {
-  NotificationProcessorService,
-  SlackNotificationService,
-  SqsNotificationService,
-} from './services';
+import { NotificationProcessorService } from './services';
 // models
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda';
+import { Response } from '../../models';
 import { SlackNotification } from './models';
 // utils
 import * as fromResponseUtils from '../../utils/response';
 
-// instantiate services
-const notificationProcessorService: NotificationProcessorService = new NotificationProcessorService(
-  new SlackNotificationService(),
-  new SqsNotificationService(),
-);
+/**
+ * Handler
+ * @param sqsEvent
+ */
+export const notificationHandler: Handler = async (
+  sqsEvent: SQSEvent,
+): Promise<Response> => {
+  return processIncomingSqsNotifications(
+    sqsEvent,
+    new NotificationProcessorService(),
+  );
+};
 
 /**
  * Process incoming sqs notifications.
  * @param sqsEvent
- * @returns http response
+ * @returns response
  */
-export const processIncomingSqsNotifications: Handler = async (
+export const processIncomingSqsNotifications: Function = async (
   sqsEvent: SQSEvent,
-): Promise<any> => {
+  notificationProcessorService: NotificationProcessorService,
+): Promise<Response> => {
   const sqsRecords: SQSRecord[] = sqsEvent.Records;
   const slackNotificationsToSend: SlackNotification[] = notificationProcessorService.convertSqsRecordsToSlackNotifications(
     sqsRecords,

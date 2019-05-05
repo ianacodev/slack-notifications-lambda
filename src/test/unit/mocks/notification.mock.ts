@@ -1,10 +1,11 @@
 // models
 import { SQSEvent, SQSRecord, SQSRecordAttributes, Context } from 'aws-lambda';
+import { Response, StatusCodeTypes } from '../../../models';
 import {
   SlackNotification,
   SlackElementTypes,
   SlackNotificationResult,
-} from '../../functions/notification-processor/models';
+} from '../../../functions/notification-processor/models';
 
 // context
 export const context: Context = {
@@ -59,7 +60,7 @@ export const sqsRecords: SQSRecord[] = [
 ];
 
 // sqs event
-export const SqsEvent: SQSEvent = {
+export const sqsEvent: SQSEvent = {
   Records: sqsRecords,
 };
 
@@ -92,3 +93,17 @@ export const slackNotificationResults: SlackNotificationResult[] = [
     incomingWebhookResult: { text: 'error' },
   },
 ];
+
+// slack notifications results promise
+export const slackNotificationResultsPromise: Promise<
+  SlackNotificationResult[]
+> = Promise.resolve(slackNotificationResults);
+
+// response
+export const response: Response = {
+  statusCode: StatusCodeTypes.ok,
+  body: JSON.stringify('success: 1 error: 1'),
+};
+
+// response promise
+export const responsePromise: Promise<Response> = Promise.resolve(response);

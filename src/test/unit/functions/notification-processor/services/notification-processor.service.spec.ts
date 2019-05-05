@@ -3,14 +3,10 @@ import {
   NotificationProcessorService,
   SlackNotificationService,
   SqsNotificationService,
-} from './../../../../functions/notification-processor/services';
+} from '../../../../../functions/notification-processor/services';
 // models
 import { SQSRecord } from 'aws-lambda';
-import {
-  SlackNotification,
-  SlackNotificationResult,
-  // ResponseStatusTypes,
-} from './../../../../functions/notification-processor/models';
+import { SlackNotification } from '../../../../../functions/notification-processor/models';
 // mocks
 import * as fromMocks from '../../../mocks';
 
@@ -34,7 +30,6 @@ describe('notificationProcessorService', () => {
       slackNotificationServiceSpy,
       sqsNotificationServiceSpy,
     );
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000;
   });
 
   it('should have test obj', () => {
@@ -50,11 +45,8 @@ describe('notificationProcessorService', () => {
   });
 
   it('should send slack notifications', async () => {
-    const slackNotificationResultsPromise: Promise<
-      SlackNotificationResult[]
-    > = Promise.resolve(fromMocks.slackNotificationResults);
     slackNotificationServiceSpy.sendSlackNotifications.and.returnValue(
-      slackNotificationResultsPromise,
+      fromMocks.slackNotificationResultsPromise,
     );
     const [
       successNotificationReceiptHandles,
