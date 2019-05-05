@@ -28,10 +28,7 @@ export const serverError = (data: any): Response => {
 /**
  * response
  */
-const response: Function = (
-  statusCode: number,
-  data: AnyLengthString,
-): Response => {
+const response: Function = (statusCode: number, data: string): Response => {
   return {
     statusCode: statusCode,
     body: JSON.stringify(data),

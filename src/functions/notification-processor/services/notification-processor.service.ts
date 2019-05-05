@@ -5,14 +5,16 @@ import { SqsNotificationService } from './sqs-notification.service';
 import { SQSRecord } from 'aws-lambda';
 import { PlainTextElement } from '@slack/types';
 import * as fromNotificationModels from '../models';
-
 export class NotificationProcessorService {
   private slackNotificationService: SlackNotificationService;
   private sqsNotificationService: SqsNotificationService;
 
-  constructor() {
-    this.slackNotificationService = new SlackNotificationService();
-    this.sqsNotificationService = new SqsNotificationService();
+  constructor(
+    slackNotificationService: SlackNotificationService,
+    sqsNotificationService: SqsNotificationService,
+  ) {
+    this.slackNotificationService = slackNotificationService;
+    this.sqsNotificationService = sqsNotificationService;
   }
 
   /**

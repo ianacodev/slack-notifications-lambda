@@ -1,5 +1,9 @@
 // services
-import { NotificationProcessorService } from './services';
+import {
+  NotificationProcessorService,
+  SlackNotificationService,
+  SqsNotificationService,
+} from './services';
 // models
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda';
 import { SlackNotification } from './models';
@@ -7,7 +11,10 @@ import { SlackNotification } from './models';
 import * as fromResponseUtils from '../../utils/response';
 
 // instantiate services
-const notificationProcessorService: NotificationProcessorService = new NotificationProcessorService();
+const notificationProcessorService: NotificationProcessorService = new NotificationProcessorService(
+  new SlackNotificationService(),
+  new SqsNotificationService(),
+);
 
 /**
  * Process incoming sqs notifications.
