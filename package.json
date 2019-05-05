@@ -1,0 +1,26 @@
+{
+  "name": "slack-notifications-lambda",
+  "version": "1.0.1",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.24",
+    "@types/request": "^2.48.1",
+    "@types/uuid": "^3.4.4",
+    "aws-sdk": "^2.444.0",
+    "serverless-offline": "^4.9.4",
+    "serverless-plugin-include-dependencies": "^3.2.1",
+    "serverless-plugin-typescript": "^1.1.7",
+    "typedoc": "^0.14.2"
+  },
+  "dependencies": {
+    "@slack/webhook": "^5.0.0",
+    "uuid": "^3.3.2"
+  }
+}
