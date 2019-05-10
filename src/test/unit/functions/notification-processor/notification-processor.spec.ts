@@ -2,8 +2,6 @@
 import { processIncomingSqsNotifications } from '../../../../functions/notification-processor/notification-processor';
 // services
 import { NotificationProcessorService } from '../../../../functions/notification-processor/services';
-// models
-import { Response } from '../../../../models';
 // mocks
 import * as fromMocks from '../../mocks';
 
@@ -22,7 +20,7 @@ describe('notificationsProcessor', () => {
       [
         'convertSqsRecordsToSlackNotifications',
         'sendSlackNotifications',
-        'sendSqsDeadLetterNotifications',
+        'deleteSqsNotifications',
       ],
     );
   });
@@ -31,24 +29,26 @@ describe('notificationsProcessor', () => {
     expect(processIncomingSqsNotifications).toBeTruthy();
   });
 
-  xit('should process notifications', () => {
+  xit('should process notifications', async () => {
     notificationProcessorServiceSpy.convertSqsRecordsToSlackNotifications.and.returnValue(
       fromMocks.slackNotifications,
     );
-    notificationProcessorServiceSpy.sendSlackNotifications.and.returnValue(
-      ['123']['456'],
+    await notificationProcessorServiceSpy.sendSlackNotifications.and.returnValue(
+      Promise.resolve(['1234']['5678']),
     );
-    const response: Promise<Response> = processIncomingSqsNotifications(
-      fromMocks.sqsEvent,
-      notificationProcessorServiceSpy,
-    );
-    let callCount: number = 0;
-    callCount += notificationProcessorServiceSpy.convertSqsRecordsToSlackNotifications.calls.count();
-    callCount += notificationProcessorServiceSpy.sendSlackNotifications.calls.count();
-    callCount += notificationProcessorServiceSpy.sendSqsDeadLetterNotifications.calls.count();
-    console.log(callCount, response);
-    // TODO: fix test
-    // expect(callCount).toBe(3);
-    // expect(response).toEqual(fromMocks.responsePromise);
+    let responseMessage: string = '';
+    try {
+      responseMessage = processIncomingSqsNotifications(
+        fromMocks.sqsEvent,
+        notificationProcessorServiceSpy,
+      );
+    } catch {
+      let callCount: number = 0;
+      callCount += notificationProcessorServiceSpy.convertSqsRecordsToSlackNotifications.calls.count();
+      callCount += notificationProcessorServiceSpy.sendSlackNotifications.calls.count();
+      callCount += notificationProcessorServiceSpy.deleteSqsNotifications.calls.count();
+      expect(callCount).toBe(3);
+      expect(responseMessage).toEqual(fromMocks.responseErrorMessage);
+    }
   });
 });

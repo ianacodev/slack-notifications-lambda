@@ -1,11 +1,11 @@
 // models
 import { SQSEvent, SQSRecord, SQSRecordAttributes, Context } from 'aws-lambda';
-import { Response, StatusCodeTypes } from '../../../models';
 import {
   SlackNotification,
   SlackElementTypes,
   SlackNotificationResult,
 } from '../../../functions/notification-processor/models';
+import { String } from 'aws-sdk/clients/rekognition';
 
 // context
 export const context: Context = {
@@ -100,10 +100,5 @@ export const slackNotificationResultsPromise: Promise<
 > = Promise.resolve(slackNotificationResults);
 
 // response
-export const response: Response = {
-  statusCode: StatusCodeTypes.ok,
-  body: JSON.stringify('success: 1 error: 1'),
-};
-
-// response promise
-export const responsePromise: Promise<Response> = Promise.resolve(response);
+export const responseSuccessMessage: String = 'success: 1';
+export const responseErrorMessage: String = 'success: 1 error: 1';

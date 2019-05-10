@@ -24,7 +24,7 @@ describe('notificationProcessorService', () => {
       ['sendSlackNotifications'],
     );
     sqsNotificationServiceSpy = jasmine.createSpyObj('SqsNotificationService', [
-      'sendSqsDeadLetterNotifications',
+      'deleteSqsNotifications',
     ]);
     notificationProcessorService = new NotificationProcessorService(
       slackNotificationServiceSpy,
@@ -58,15 +58,14 @@ describe('notificationProcessorService', () => {
     expect(errorNotificationReceiptHandles.length).toBe(1);
   });
 
-  it('should send dead letter notifications', () => {
+  it('should delete sqs notifications', () => {
     const errorNotificationReceiptHandles: string[] = fromMocks.sqsRecords.map(
       (sqsRecord: SQSRecord) => sqsRecord.receiptHandle,
     );
-    notificationProcessorService.sendSqsDeadLetterNotifications(
+    notificationProcessorService.deleteSqsNotifications(
       errorNotificationReceiptHandles,
-      fromMocks.sqsRecords,
     );
-    const callCount: number = sqsNotificationServiceSpy.sendSqsDeadLetterNotifications.calls.count();
+    const callCount: number = sqsNotificationServiceSpy.deleteSqsNotifications.calls.count();
     expect(callCount).toBe(1);
   });
 });
