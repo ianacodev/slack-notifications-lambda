@@ -3,6 +3,11 @@ import { SlackNotificationService } from './slack-notification.service';
 import { SqsNotificationService } from './sqs-notification.service';
 // models
 import { SQSRecord } from 'aws-lambda';
+import {
+  DeleteMessageBatchResult,
+  SendMessageBatchRequestEntry,
+  SendMessageBatchResult,
+} from 'aws-sdk/clients/sqs';
 import { PlainTextElement } from '@slack/types';
 import * as fromNotificationModels from '../models';
 export class NotificationProcessorService {
@@ -54,15 +59,15 @@ export class NotificationProcessorService {
    * Send slack notifications
    * @param slackNotifications
    */
-  async sendSlackNotifications(
+  sendSlackNotifications(
     slackNotifications: fromNotificationModels.SlackNotification[],
   ): Promise<string[][]> {
     console.log(
-      `[sendSlackNotifications] notifications to send: ${
+      `[sendSlackNotifications] sending slack notifications: ${
         slackNotifications.length
       }`,
     );
-    return await this.handleSendSlackNotificationsResponse(
+    return this.handleSendSlackNotificationsResponse(
       this.slackNotificationService.sendSlackNotifications(slackNotifications),
     );
   }
@@ -70,20 +75,13 @@ export class NotificationProcessorService {
   /**
    * Handle send slack notifications response.
    * @param response
-   * @param sqsRecords
    */
-  private async handleSendSlackNotificationsResponse(
+  private handleSendSlackNotificationsResponse(
     response: Promise<fromNotificationModels.SlackNotificationResult[]>,
   ): Promise<string[][]> {
     return response.then(
-      (
-        notificationResults: fromNotificationModels.SlackNotificationResult[],
-      ) => {
-        return this.filterNotificationResultsByStatus(notificationResults);
-      },
-      (err: any) => {
-        return err;
-      },
+      (notificationResults: fromNotificationModels.SlackNotificationResult[]) =>
+        this.filterNotificationResultsByStatus(notificationResults),
     );
   }
 
@@ -115,39 +113,35 @@ export class NotificationProcessorService {
   }
 
   /**
-   * Send sqs dead letter notifications
-   * @param errorNotificationReceiptHandles
-   * @param sqsRecords
+   * Delete sqs notifications.
+   * @param receiptHandles
+   * @returns promise delete message batch results
    */
-  sendSqsDeadLetterNotifications(
-    errorNotificationReceiptHandles: string[],
-    sqsRecords: SQSRecord[],
-  ): void {
+  deleteSqsNotifications(
+    receiptHandles: string[],
+  ): Promise<DeleteMessageBatchResult> {
     console.log(
-      `[sendSqsDeadLetterNotifications] dead letter notifications to send: ${
-        errorNotificationReceiptHandles.length
+      `[deleteSqsNotifications] deleting sqs notifications: ${
+        receiptHandles.length
       }`,
     );
-    const sqsErrorRecords = this.extractSqsErrorRecordsFromSqsRecords(
-      errorNotificationReceiptHandles,
-      sqsRecords,
-    );
-    this.sqsNotificationService.sendSqsDeadLetterNotifications(sqsErrorRecords);
+    return this.sqsNotificationService.deleteSqsNotifications(receiptHandles);
   }
 
   /**
-   * Extract sqs error records from sqs records.
-   * @params errorNotificationReceiptHandles
-   * @returns sqs error records
+   * Send sqs notifications
+   * @param notification
    */
-  private extractSqsErrorRecordsFromSqsRecords(
-    errorNotificationReceiptHandles: string[],
-    sqsRecords: SQSRecord[],
-  ): SQSRecord[] {
-    return sqsRecords
-      .filter((sqsRecord: SQSRecord) =>
-        errorNotificationReceiptHandles.includes(sqsRecord.receiptHandle),
-      )
-      .map((sqsRecord: SQSRecord) => sqsRecord);
+  sendSqsNotifications(
+    sendMessageBatchRequestEntries: SendMessageBatchRequestEntry[],
+  ): Promise<SendMessageBatchResult> {
+    console.log(
+      `[sendSqsNotifications] sending sqs notifications: ${
+        sendMessageBatchRequestEntries.length
+      }`,
+    );
+    return this.sqsNotificationService.sendSqsNotifications(
+      sendMessageBatchRequestEntries,
+    );
   }
 }

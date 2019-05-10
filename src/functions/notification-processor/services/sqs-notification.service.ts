@@ -1,20 +1,19 @@
 // vendor
 import { SQS } from 'aws-sdk';
 // models
-import { SQSRecord } from 'aws-lambda';
 import {
   DeleteMessageBatchRequestEntry,
   DeleteMessageBatchRequest,
+  DeleteMessageBatchResult,
   SendMessageBatchRequestEntry,
   SendMessageBatchRequest,
+  SendMessageBatchResult,
 } from 'aws-sdk/clients/sqs';
 // utils
 import * as fromUtils from '../../../utils';
 // env vars
 const SQS_SLACK_NOTIFICATIONS_QUEUE_URL: string = process.env
   .SQS_SLACK_NOTIFICATIONS_QUEUE_URL as string;
-const SQS_SLACK_NOTIFICATIONS_DEAD_LETTER_QUEUE_URL = process.env
-  .SQS_SLACK_NOTIFICATIONS_DEAD_LETTER_QUEUE_URL as string;
 
 export class SqsNotificationService {
   private sqs: SQS;
@@ -24,37 +23,20 @@ export class SqsNotificationService {
   }
 
   /**
-   * Send sqs notifications to dead letter queue.
-   * @param receiptHandles
-   */
-  sendSqsDeadLetterNotifications(
-    sqsErrorRecords: SQSRecord[],
-    queueUrl: string = SQS_SLACK_NOTIFICATIONS_DEAD_LETTER_QUEUE_URL,
-  ): void {
-    const sendMessageBatchRequestEntries: SendMessageBatchRequestEntry[] = sqsErrorRecords.map(
-      (sqsErrorRecord: SQSRecord): SendMessageBatchRequestEntry => {
-        return {
-          Id: fromUtils.generateUUID(),
-          MessageBody: sqsErrorRecord.body,
-        };
-      },
-    );
-    this.sendSqsNotifications(sendMessageBatchRequestEntries, queueUrl);
-  }
-
-  /**
    * Send sqs notifications to queue.
    * @param sqsRecords
    */
-  private sendSqsNotifications(
+  sendSqsNotifications(
     sendMessageBatchRequestEntries: SendMessageBatchRequestEntry[],
-    queueUrl: string,
-  ): void {
+    queueUrl: string = SQS_SLACK_NOTIFICATIONS_QUEUE_URL,
+  ): Promise<SendMessageBatchResult> {
     const sendMessageBatchRequest: SendMessageBatchRequest = {
       QueueUrl: queueUrl,
       Entries: sendMessageBatchRequestEntries,
     };
-    this.sqs.sendMessageBatch(sendMessageBatchRequest, this.responseCallback);
+    return this.sqs
+      .sendMessageBatch(sendMessageBatchRequest, this.responseCallback)
+      .promise();
   }
 
   /**
@@ -65,7 +47,7 @@ export class SqsNotificationService {
   deleteSqsNotifications(
     receiptHandles: string[],
     queueUrl: string = SQS_SLACK_NOTIFICATIONS_QUEUE_URL,
-  ): void {
+  ): Promise<DeleteMessageBatchResult> {
     const deleteMessageBatchRequestEntries: DeleteMessageBatchRequestEntry[] = receiptHandles.map(
       (receiptHandle: string) =>
         this.createDeleteMessageBatchRequestEntry(receiptHandle),
@@ -74,10 +56,9 @@ export class SqsNotificationService {
       QueueUrl: queueUrl,
       Entries: deleteMessageBatchRequestEntries,
     };
-    this.sqs.deleteMessageBatch(
-      deleteMessageBatchRequest,
-      this.responseCallback,
-    );
+    return this.sqs
+      .deleteMessageBatch(deleteMessageBatchRequest, this.responseCallback)
+      .promise();
   }
 
   /**
@@ -98,12 +79,12 @@ export class SqsNotificationService {
    */
   private responseCallback(error: any, data: any): void {
     if (error) {
-      console.error(`[sendSqsNotifications::error] ${error}`);
+      console.error(`[sqs] error: ${error}`);
     } else {
       console.log(
-        `[sendSqsNotifications::success] successful: ${
-          data.Successful.length
-        } failed: ${data.Failed.length}`,
+        `[sqs] success: ${data.Successful.length} failed: ${
+          data.Failed.length
+        }`,
       );
     }
   }

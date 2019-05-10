@@ -17,10 +17,10 @@ export class SlackNotificationService {
    * Send slack notifications
    * @param plainTextElement
    */
-  async sendSlackNotifications(
+  sendSlackNotifications(
     slackNotifications: SlackNotification[],
   ): Promise<SlackNotificationResult[]> {
-    return await Promise.all(
+    return Promise.all(
       slackNotifications.map((slackNotification: SlackNotification) => {
         return this.sendSlackNotification(
           slackNotification.plainTextElement,

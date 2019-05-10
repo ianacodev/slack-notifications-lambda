@@ -1,23 +1,23 @@
 // services
 import { NotificationProcessorService } from './services';
 // models
-import { Handler, SQSEvent, SQSRecord } from 'aws-lambda';
+import { Handler, SQSEvent, SQSRecord, Context } from 'aws-lambda';
 import { Response } from '../../models';
 import { SlackNotification } from './models';
-// utils
-import * as fromResponseUtils from '../../utils/response';
 
 /**
  * Handler
  * @param sqsEvent
  */
 export const notificationHandler: Handler = async (
-  sqsEvent: SQSEvent,
-): Promise<Response> => {
-  return processIncomingSqsNotifications(
-    sqsEvent,
+  event: SQSEvent,
+  context: Context,
+) => {
+  const response: Response = await processIncomingSqsNotifications(
+    event,
     new NotificationProcessorService(),
   );
+  return response;
 };
 
 /**
@@ -28,7 +28,8 @@ export const notificationHandler: Handler = async (
 export const processIncomingSqsNotifications: Function = async (
   sqsEvent: SQSEvent,
   notificationProcessorService: NotificationProcessorService,
-): Promise<Response> => {
+): Promise<string> => {
+  let responseMessage: string = 'no messages processed';
   const sqsRecords: SQSRecord[] = sqsEvent.Records;
   const slackNotificationsToSend: SlackNotification[] = notificationProcessorService.convertSqsRecordsToSlackNotifications(
     sqsRecords,
@@ -39,19 +40,20 @@ export const processIncomingSqsNotifications: Function = async (
   ] = await notificationProcessorService.sendSlackNotifications(
     slackNotificationsToSend,
   );
-  /**
-   * NOTE: on success sqs lambda trigger messages are auto deleted
-   * so currently no need to delete success notifications from queue
-   */
+  // handle success notifications
+  if (successNotificationReceiptHandles.length) {
+    await notificationProcessorService.deleteSqsNotifications(
+      successNotificationReceiptHandles,
+    );
+    responseMessage = `success: ${successNotificationReceiptHandles.length}`;
+  }
+  // handle error notifications
   if (errorNotificationReceiptHandles.length) {
-    notificationProcessorService.sendSqsDeadLetterNotifications(
-      errorNotificationReceiptHandles,
-      sqsRecords,
+    throw new Error(
+      `success: ${successNotificationReceiptHandles.length} error: ${
+        errorNotificationReceiptHandles.length
+      }`,
     );
   }
-  return fromResponseUtils.ok(
-    `success: ${successNotificationReceiptHandles.length} error: ${
-      errorNotificationReceiptHandles.length
-    }`,
-  );
+  return responseMessage;
 };
