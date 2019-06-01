@@ -3,7 +3,7 @@
     {
       "messageId": "1119171c-613e-4c79-a690-1bc24a6d2490",
       "receiptHandle": "111BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==",
-      "body": "{\n\t\"text\": \"hello world 1\"\n}",
+      "body": "{\"type\":\"testType1\",\"message\":\"\",\"notificationMessage\":\"test message 1\"}",
       "attributes": [],
       "messageAttributes": {},
       "md5OfBody": "111ed73daf187c4818ebaf267ca0b41c",
@@ -14,34 +14,12 @@
     {
       "messageId": "2229171c-613e-4c79-a690-1bc24a6d2490",
       "receiptHandle": "222BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==",
-      "body": "{\n\t\"text\": \"hello world 2\"\n}",
+      "body": "{\"type\":\"testType1\",\"message\":\"\",\"notificationMessage\":\"test message 2\"}",
       "attributes": [],
       "messageAttributes": {},
       "md5OfBody": "222ed73daf187c4818ebaf267ca0b41c",
       "eventSource": "aws:sqs",
       "eventSourceARN": "arn:aws:sqs:us-east-1:222812251862:slack-messages",
-      "awsRegion": "us-east-1"
-    },
-    {
-      "messageId": "3339171c-613e-4c79-a690-1bc24a6d2490",
-      "receiptHandle": "333BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==",
-      "body": "{\n\t\"text\": \"hello world 3\"\n}",
-      "attributes": [],
-      "messageAttributes": {},
-      "md5OfBody": "333ed73daf187c4818ebaf267ca0b41c",
-      "eventSource": "aws:sqs",
-      "eventSourceARN": "arn:aws:sqs:us-east-1:333812251862:slack-messages",
-      "awsRegion": "us-east-1"
-    },
-    {
-      "messageId": "4449171c-613e-4c79-a690-1bc24a6d2490",
-      "receiptHandle": "444BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==",
-      "body": "{\n\t\"text\": \"hello world 4\"\n}",
-      "attributes": [],
-      "messageAttributes": {},
-      "md5OfBody": "444ed73daf187c4818ebaf267ca0b41c",
-      "eventSource": "aws:sqs",
-      "eventSourceARN": "arn:aws:sqs:us-east-1:444812251862:slack-messages",
       "awsRegion": "us-east-1"
     }
   ]
