@@ -4,6 +4,7 @@ import {
   SlackNotification,
   SlackElementTypes,
   SlackNotificationResult,
+  SQSRecordBodyObj,
 } from '../../../functions/notification-processor/models';
 import { String } from 'aws-sdk/clients/rekognition';
 
@@ -31,13 +32,27 @@ export const sqsRecordAttributes: SQSRecordAttributes = {
   ApproximateFirstReceiveTimestamp: '',
 };
 
+// sqs record body obj
+export const sqsRecordBodyObj1: SQSRecordBodyObj = {
+  type: 'testType1',
+  message: '',
+  notificationMessage: 'test message 1',
+};
+
+// sqs record body obj
+export const sqsRecordBodyObj2: SQSRecordBodyObj = {
+  type: 'testType2',
+  message: '',
+  notificationMessage: 'test message 2',
+};
+
 // sqs records
 export const sqsRecords: SQSRecord[] = [
   {
     messageId: '1119171c-613e-4c79-a690-1bc24a6d2490',
     receiptHandle:
       '111BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==',
-    body: '{\n\t"text": "test message 1"\n}',
+    body: JSON.stringify(sqsRecordBodyObj1),
     attributes: sqsRecordAttributes,
     messageAttributes: {},
     md5OfBody: '111ed73daf187c4818ebaf267ca0b41c',
@@ -49,7 +64,7 @@ export const sqsRecords: SQSRecord[] = [
     messageId: '2229171c-613e-4c79-a690-1bc24a6d2490',
     receiptHandle:
       '222BjRCbvwLVmvHsxWfzM8HYZ+z+xuAz8lJ5d0YV1vONvbbb3A/mrHhvO5WyzXY/iyyvIzw+S4YpvDaxd91YIp/yMrN9qvtadtKpov8A87mY9m2Z/ghy0K1jVGIB9l/WDysb1MTqFnR7Tw3ASst1lBrp+JNrYEl0UlFDZPoyuLFBBg3AkAb90PMTkQ+o0vok20yEQ9e5zE+6izfPlBf8Sf/ZTDYsigyHL23aKOikG/5f7njwIX+cvlBOo6xuFq1MTeNqjcqAZfLJzYUYdzKsVBqpiGTSHHexsWFIWVUGhsm1WyIQXN65LXxlBz7lbksE9J6HPtBCEysz80iIY5fVoQMeo7scfvCVz6nr0lVw86NPAUfXbAz8bJZnp3rvfPrhPB6l5QgL8a837Fdg0/MxmKae6A==',
-    body: '{\n\t"text": "test message 2"\n}',
+    body: JSON.stringify(sqsRecordBodyObj1),
     attributes: sqsRecordAttributes,
     messageAttributes: {},
     md5OfBody: '222ed73daf187c4818ebaf267ca0b41c',
@@ -65,22 +80,18 @@ export const sqsEvent: SQSEvent = {
 };
 
 // slack notifications
-export const slackNotifications: SlackNotification[] = [
-  {
-    receiptHandle: sqsRecords[0].receiptHandle,
-    plainTextElement: {
-      type: SlackElementTypes.PlainText,
-      text: sqsRecords[0].body,
-    },
+export const slackNotifications: SlackNotification[] = sqsRecords.map(
+  (sqsRecord: SQSRecord) => {
+    const sqsRecordBodyObj: SQSRecordBodyObj = JSON.parse(sqsRecord.body);
+    return {
+      receiptHandle: sqsRecord.receiptHandle,
+      plainTextElement: {
+        type: SlackElementTypes.PlainText,
+        text: sqsRecordBodyObj.notificationMessage,
+      },
+    };
   },
-  {
-    receiptHandle: sqsRecords[1].receiptHandle,
-    plainTextElement: {
-      type: SlackElementTypes.PlainText,
-      text: sqsRecords[1].body,
-    },
-  },
-];
+);
 
 // slack notification results
 export const slackNotificationResults: SlackNotificationResult[] = [

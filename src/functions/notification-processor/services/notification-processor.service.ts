@@ -44,10 +44,13 @@ export class NotificationProcessorService {
     sqsRecord: SQSRecord,
   ): fromNotificationModels.SlackNotification {
     const sqsMessageBody: string = sqsRecord.body;
+    const sqsMessageBodyObj: fromNotificationModels.SQSRecordBodyObj = JSON.parse(
+      sqsMessageBody,
+    );
     const receiptHandle: string = sqsRecord.receiptHandle;
     const plainTextElement: PlainTextElement = {
       type: fromNotificationModels.SlackElementTypes.PlainText,
-      text: sqsMessageBody,
+      text: sqsMessageBodyObj.notificationMessage,
     };
     return {
       receiptHandle: receiptHandle,
