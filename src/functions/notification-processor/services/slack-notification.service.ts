@@ -4,7 +4,7 @@ import { IncomingWebhook, IncomingWebhookResult } from '@slack/webhook';
 import { PlainTextElement } from '@slack/types';
 import { SlackNotification, SlackNotificationResult } from '../models';
 // env vars
-const SLACK_URL: string = process.env.SLACK_URL as string;
+const SLACK_URL: string = process.env.slackUrl as string;
 
 export class SlackNotificationService {
   private webhook: IncomingWebhook;

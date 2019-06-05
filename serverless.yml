@@ -1,14 +1,18 @@
 service: slack-notifications-lambda
+custom:
+  stage: ${opt:stage, 'sbx'}
+  environment: ${file(resources/env.yml):${self:custom.stage}, file(resources/env.yml):default}
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: ${opt:stage, 'sbx'}
+  stage: ${self:custom.stage}
   region: us-east-1
-  role: ${env:AWS_ROLE}
+  role: ${self:custom.environment.aws.role}
   environment:
-    SQS_SLACK_NOTIFICATIONS_QUEUE_URL: ${env:SQS_SLACK_NOTIFICATIONS_QUEUE_URL}
-    SQS_SLACK_NOTIFICATIONS_DEAD_LETTER_QUEUE_URL: ${env:SQS_SLACK_NOTIFICATIONS_DEAD_LETTER_QUEUE_URL}
-    SLACK_URL: ${env:SLACK_URL}
+    sqsSlackNotificationsQueueUrl: ${self:custom.environment.sqs.slack_notifications_queue_url}
+    slackUrl: ${self:custom.environment.slack.url}
+resources:
+  # - ${file(resources/sqs-queues.yml)}
 plugins:
   - serverless-plugin-typescript
   - serverless-offline

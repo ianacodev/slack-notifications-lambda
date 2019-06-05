@@ -13,7 +13,7 @@ import {
 import * as fromUtils from '../../../utils';
 // env vars
 const SQS_SLACK_NOTIFICATIONS_QUEUE_URL: string = process.env
-  .SQS_SLACK_NOTIFICATIONS_QUEUE_URL as string;
+  .sqsSlackNotificationsQueueUrl as string;
 
 export class SqsNotificationService {
   private sqs: SQS;
