@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 8
+    commands:
+      - npm install -g serverless@1.41.0
+      - npm install
+      - npm --version
+  build:
+    commands:
+      - npm test
+      # create directory for deployment packages
+      - mkdir artifacts
+      # create sandbox deployment package
+      - mkdir artifacts/sbx
+      - serverless package --package artifacts/sbx --stage sbx -v
+      # create int deployment package
+      - mkdir artifacts/int
+      - serverless package --package artifacts/int --stage int -v
+      # create prod deployment package
+      - mkdir artifacts/prod
+      - serverless package --package artifacts/prod --stage prod -v
+
+artifacts:
+  files:
+    # export artifacts needed for staging and prod deployments to an S3 bucket
+    - artifacts/**/*
+    - serverless.yml
+    - deploy.sh
+    - buildspec-deploy.yaml

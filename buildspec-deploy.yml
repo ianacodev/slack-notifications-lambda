@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 8
+    commands:
+      - npm install -g serverless@1.41.1
+  build:
+    commands:
+      - bash deploy.sh
